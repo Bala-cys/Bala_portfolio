@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bala | Cybersecurity · SOC · VAPT</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#050509;
+  --bg-alt:#090910;
+  --card:#11111a;
+  --card-soft:#151520;
+  --accent:#ff4040;
+  --accent-soft:#ff6a6a;
+  --accent-dark:#b82020;
+  --text:#f5f5f7;
+  --muted:#a0a0b5;
+  --border:#222231;
+  --glow:#ff4040;
+}
+
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+html{
+  scroll-behavior:smooth;
+}
+body{
+  font-family:'Inter',sans-serif;
+  background:radial-gradient(circle at top,#181828 0,#050509 55%);
+  color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ANIMATIONS */
+body.loaded .fade-up{
+  opacity:1;
+  transform:translateY(0);
+}
+.fade-up{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity .7s ease,transform .7s ease;
+}
+
+/* CYBER ANIMATIONS */
+@keyframes scanline {
+  0%, 100% { transform: translateY(100vh) skewY(-12deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100%) skewY(-12deg); opacity: 0; }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255,64,64,0.5); }
+  50% { box-shadow: 0 0 40px rgba(255,64,64,0.8); }
+}
+@keyframes matrix {
+  0% { transform: translateY(100vh); }
+  100% { transform: translateY(-100px); }
+}
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* LAYOUT */
+.wrapper{
+  max-width:1120px;
+  margin:0 auto;
+  padding:0 20px;
+}
+
+/* NAV */
+nav{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:1000;
+  backdrop-filter:blur(22px);
+  background:linear-gradient(to bottom,rgba(5,5,9,0.96),rgba(5,5,9,0.80),rgba(5,5,9,0.0));
+  border-bottom:1px solid rgba(255,64,64,0.15);
+}
+.nav-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 20px;
+  max-width:1120px;
+  margin:0 auto;
+}
+.nav-logo{
+  font-weight:700;
+  letter-spacing:.14em;
+  font-size:14px;
+  text-transform:uppercase;
+}
+.nav-logo span{
+  color:var(--accent);
+}
+.nav-links{
+  display:flex;
+  gap:22px;
+  font-size:13px;
+}
+.nav-links a{
+  text-decoration:none;
+  color:var(--muted);
+  position:relative;
+  padding-bottom:4px;
+  transition:color .25s ease;
+}
+.nav-links a::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:0;
+  width:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent-soft));
+  transition:width .25s ease;
+}
+.nav-links a:hover{
+  color:var(--text);
+}
+.nav-links a:hover::after{
+  width:100%;
+}
+
+/* SECTIONS */
+section{
+  padding:110px 0 70px;
+}
+section:first-of-type{
+  padding-top:120px;
+}
+
+/* HERO */
+.hero{
+  display:grid;
+  grid-template-columns:1.6fr 1.1fr;
+  gap:40px;
+  align-items:center;
+}
+.hero-left{
+  max-width:620px;
+}
+.hero-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:4px 14px;
+  border-radius:999px;
+  border:1px solid rgba(255,64,64,0.45);
+  background:rgba(10,10,16,0.9);
+  color:var(--accent-soft);
+  font-size:12px;
+  margin-bottom:16px;
+}
+.hero-badge-dot{
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:var(--accent);
+  box-shadow:0 0 12px rgba(255,64,64,.7);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+.hero-eyebrow{
+  font-size:12px;
+  color:var(--muted);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+.hero-title{
+  font-size:40px;
+  line-height:1.15;
+  margin-bottom:10px;
+}
+.hero-title span{
+  color:var(--accent);
+}
+.hero-roles{
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:.18em;
+  color:var(--muted);
+  margin-bottom:20px;
+}
+.hero-subtitle{
+  font-size:15px;
+  color:var(--muted);
+  margin-bottom:26px;
+}
+.hero-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:26px;
+}
+.tag-chip{
+  font-size:11px;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.12);
+  color:var(--muted);
+}
+.hero-ctas{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  margin-bottom:22px;
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:11px 22px;
+  border-radius:999px;
+  font-size:14px;
+  border:1px solid transparent;
+  text-decoration:none;
+  cursor:pointer;
+  transition:transform .22s ease,box-shadow .22s ease,background .22s ease,color .22s ease,border-color .22s ease;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--accent),var(--accent-soft));
+  color:#050509;
+  box-shadow:0 16px 45px rgba(255,64,64,0.4);
+}
+.btn-primary:hover{
+  transform:translateY(-1px) scale(1.02);
+  box-shadow:0 22px 60px rgba(255,64,64,0.55);
+}
+.btn-ghost{
+  background:transparent;
+  color:var(--text);
+  border-color:rgba(255,255,255,0.16);
+}
+.btn-ghost:hover{
+  border-color:var(--accent);
+  color:var(--accent-soft);
+}
+.hero-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:18px;
+  font-size:12px;
+  color:var(--muted);
+}
+.hero-meta-item span{
+  display:block;
+  color:var(--text);
+  font-weight:600;
+  font-size:14px;
+}
+
+/* UNIQUE CYBER PROFILE CARD */
+.hero-right{
+  display:flex;
+  justify-content:flex-end;
+}
+.profile-card{
+  width:320px;
+  height:380px;
+  padding:24px;
+  border-radius:24px;
+  border:1px solid rgba(255,255,255,0.09);
+  background:
+    linear-gradient(135deg,#131320,#080711),
+    radial-gradient(circle at top left,rgba(255,64,64,0.15),transparent 60%);
+  box-shadow:0 22px 70px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.1);
+  position:relative;
+  overflow:hidden;
+}
+.profile-card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:100%;
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  animation: scanline 4s linear infinite;
+}
+.profile-name{
+  font-size:20px;
+  font-weight:700;
+  margin-bottom:8px;
+  position:relative;
+  z-index:2;
+}
+.profile-role{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:16px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.profile-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 12px;
+  font-size:11px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.18);
+  background:rgba(5,5,10,0.9);
+  margin-bottom:20px;
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+.profile-pill span{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 12px rgba(255,64,64,0.8);
+}
+.profile-list{
+  list-style:none;
+  font-size:12px;
+  color:var(--muted);
+  position:relative;
+  z-index:2;
+}
+.profile-list li{
+  margin-bottom:8px;
+  padding:4px 0;
+  position:relative;
+}
+.profile-list li::before{
+  content:"▸";
+  color:var(--accent);
+  margin-right:8px;
+  font-weight:600;
+}
+
+/* CYBER DECORATIONS */
+.profile-orb{
+  position:absolute;
+  width:160px;
+  height:160px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,64,64,0.12),transparent 70%);
+  top:20px;
+  right:-40px;
+  animation: rotate 20s linear infinite;
+  opacity:0.6;
+}
+.matrix-lines{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  pointer-events:none;
+}
+.matrix-line{
+  position:absolute;
+  color:rgba(255,64,64,0.3);
+  font-family:monospace;
+  font-size:12px;
+  white-space:nowrap;
+  animation: matrix 8s linear infinite;
+}
+.matrix-line:nth-child(1){ left:10%; animation-delay:0s; }
+.matrix-line:nth-child(2){ left:30%; animation-delay:2s; }
+.matrix-line:nth-child(3){ left:60%; animation-delay:4s; }
+.matrix-line:nth-child(4){ left:80%; animation-delay:6s; }
+
+/* SECTION HEADERS */
+.section-header{
+  margin-bottom:26px;
+}
+.section-kicker{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+.section-title{
+  font-size:22px;
+}
+
+/* CARDS */
+.card{
+  background:var(--card);
+  border-radius:18px;
+  padding:22px 22px 18px;
+  border:1px solid var(--border);
+  box-shadow:0 18px 48px rgba(0,0,0,0.8);
+  transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease,background .28s ease;
+  position:relative;
+  overflow:hidden;
+}
+.card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:100%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  transition:left .6s ease;
+}
+.card:hover::before{
+  left:100%;
+}
+.card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(255,64,64,0.4);
+  box-shadow:0 26px 72px rgba(0,0,0,0.95);
+}
+
+/* ABOUT */
+.about-grid{
+  display:grid;
+  grid-template-columns:1.6fr 1.1fr;
+  gap:24px;
+}
+.about-text{
+  font-size:14px;
+  color:var(--muted);
+}
+
+/* SKILLS */
+.skills-grid{
+  display:grid;
+  grid-template-columns:1.4fr 1.2fr;
+  gap:24px;
+}
+.skill-list,
+.tool-list,
+.comp-list{
+  list-style:none;
+  font-size:13px;
+  color:var(--muted);
+}
+.skill-list li,
+.tool-list li,
+.comp-list li{
+  margin-bottom:6px;
+}
+.skill-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+}
+.skill-chip{
+  font-size:11px;
+  padding:4px 9px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.14);
+  color:var(--muted);
+  transition:all .2s ease;
+}
+.skill-chip:hover{
+  background:var(--accent);
+  color:#050509;
+  transform:scale(1.05);
+}
+
+/* PROJECTS */
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:22px;
+}
+.project-tag{
+  font-size:11px;
+  color:var(--accent-soft);
+  margin-bottom:6px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.project-title{
+  font-size:15px;
+  margin-bottom:6px;
+}
+.project-desc{
+  font-size:13px;
+  color:var(--muted);
+}
+.project-desc li{
+  margin-bottom:4px;
+}
+
+/* CERTS + INTERNSHIP */
+.two-col{
+  display:grid;
+  grid-template-columns:1.4fr 1.1fr;
+  gap:24px;
+}
+.card h3{
+  font-size:14px;
+  margin-bottom:10px;
+}
+.card ul{
+  list-style:none;
+  font-size:13px;
+  color:var(--muted);
+}
+.card ul li{
+  margin-bottom:6px;
+}
+
+/* CONTACT */
+.contact-grid{
+  display:grid;
+  grid-template-columns:1.4fr 1.1fr;
+  gap:24px;
+}
+.contact-item{
+  font-size:13px;
+  margin-bottom:8px;
+  color:var(--muted);
+}
+.contact-item span{
+  display:inline-block;
+  min-width:70px;
+  color:var(--text);
+}
+.contact-item a{
+  color:var(--accent-soft);
+  text-decoration:none;
+}
+.contact-item a:hover{
+  color:var(--accent);
+}
+
+/* FOOTER */
+footer{
+  padding:26px 0 34px;
+  border-top:1px solid #14141f;
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .hero{
+    grid-template-columns:1fr;
+  }
+  .hero-right{
+    justify-content:flex-start;
+  }
+  .about-grid,
+  .skills-grid,
+  .two-col,
+  .contact-grid{
+    grid-template-columns:1fr;
+  }
+}
+@media(max-width:720px){
+  .nav-inner{
+    padding-inline:16px;
+  }
+  .nav-links{
+    gap:14px;
+    font-size:12px;
+  }
+  section{
+    padding:90px 0 60px;
+  }
+  .hero-title{
+    font-size:32px;
+  }
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">BALA<span>_CYBER</span></div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#certs">Certs</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main class="wrapper">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero fade-up">
+      <div class="hero-left">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Cybersecurity · SOC · VAPT
+        </div>
+        <div class="hero-eyebrow">Portfolio</div>
+        <h1 class="hero-title">Hi, I’m <span>Bala</span>.</h1>
+        <div class="hero-roles">CYBERSECURITY · SOC ANALYST · VAPT</div>
+        <p class="hero-subtitle">
+          I secure digital infrastructures by detecting threats, analyzing vulnerabilities, and building resilient defense systems.
+          Passionate about SOC operations, penetration testing, and proactive network security against real-world cyber attacks.
+        </p>
+
+        <div class="hero-tags">
+          <div class="tag-chip">SOC Operations</div>
+          <div class="tag-chip">Vulnerability Assessment (VA)</div>
+          <div class="tag-chip">VAPT</div>
+        </div>
+
+        <div class="hero-ctas">
+          <a href="#projects" class="btn btn-primary">View Security Projects</a>
+          <a href="https://github.com/Bala-cys/Bala-cys" class="btn btn-ghost" target="_blank">View Resume on GitHub</a>
+        </div>
+
+        <div class="hero-meta">
+          <div class="hero-meta-item">
+            Role
+            <span>Cybersecurity · SOC · VAPT</span>
+          </div>
+          <div class="hero-meta-item">
+            Location
+            <span>Kallakurichi, Tamil Nadu</span>
+          </div>
+          <div class="hero-meta-item">
+            Open To
+            <span>Enterprise security & SOC roles</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="profile-card">
+          <div class="matrix-lines">
+            <div class="matrix-line">101010 SECURE</div>
+            <div class="matrix-line">VAPT THREAT</div>
+            <div class="matrix-line">SOC DETECT</div>
+            <div class="matrix-line">NETWORK DEFEND</div>
+          </div>
+          <div class="profile-orb"></div>
+          <div class="profile-name">Bala</div>
+          <div class="profile-role">Cybersecurity | SOC Analyst | VAPT</div>
+          <div class="profile-pill">
+            <span></span>
+            Actively seeking cybersecurity & SOC roles
+          </div>
+          <ul class="profile-list">
+            <li>BE. Cyber Security · GPA 8.2 · Paavai Engineering College</li>
+            <li>Focus: SOC, Vulnerability Assessment, VAPT</li>
+            <li>Global Immersion Program at UMPSA (Malaysia)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-header fade-up">
+      <div class="section-kicker">Profile</div>
+      <h2 class="section-title">About Me</h2>
+    </div>
+    <div class="about-grid fade-up">
+      <div class="card">
+        <p class="about-text">
+          I am a dedicated Cyber Security graduate with a strong passion for protecting digital systems and defending networks against real-world threats.
+          I have hands-on experience in network traffic analysis, penetration testing, and vulnerability assessment through academic and practical projects.
+          My work on ARP Spoofing Detection, Netwiz – Network Anomaly Detector, and Chrono – Cryptographic Metadata Forensics strengthened my skills in Python,
+          security monitoring, and defensive strategies. I am particularly interested in SOC operations, incident response, and proactive threat detection.
+          I am eager to contribute to building secure, resilient infrastructures while continuously enhancing my technical expertise in cybersecurity.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Education</h3>
+        <ul>
+          <li><strong>BE. Cyber Security</strong> – Paavai Engineering College · GPA 8.2</li>
+          <li><strong>SRM Muthamizhl Hr. Sec. School</strong> – HSC 85% (2021)</li>
+          <li><strong>SRM Muthamizhl Hr. Sec. School</strong> – SSLC 77% (2019)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-header fade-up">
+      <div class="section-kicker">Skills</div>
+      <h2 class="section-title">Technical Strengths</h2>
+    </div>
+
+    <div class="skills-grid fade-up">
+      <div class="card">
+        <h3>Technical Skills</h3>
+        <ul class="skill-list">
+          <li>Windows Administration & Security</li>
+          <li>Linux System Management</li>
+          <li>Active Directory Fundamentals</li>
+          <li>Network Security</li>
+          <li>Vulnerability Assessment (VA)</li>
+          <li>Penetration Testing Basics</li>
+          <li>Incident Monitoring & Log Analysis</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Key Competencies</h3>
+        <ul class="comp-list">
+          <li>Threat Detection & Incident Response</li>
+          <li>Vulnerability Assessment & Risk Mitigation</li>
+          <li>Network Security & Traffic Analysis</li>
+          <li>Security Monitoring & Log Analysis</li>
+        </ul>
+        <h3 style="margin-top:14px;">Security Tools & Technologies</h3>
+        <div class="skill-chips">
+          <span class="skill-chip">Burp Suite</span>
+          <span class="skill-chip">Wireshark</span>
+          <span class="skill-chip">Nmap</span>
+          <span class="skill-chip">Nessus</span>
+          <span class="skill-chip">Metasploitable</span>
+          <span class="skill-chip">Netcat</span>
+          <span class="skill-chip">Nipper</span>
+          <span class="skill-chip">Networking Fundamentals</span>
+          <span class="skill-chip">Metasploit Framework</span>
+          <span class="skill-chip">OWASP ZAP</span>
+          <span class="skill-chip">Hydra</span>
+          <span class="skill-chip">John the Ripper</span>
+          <span class="skill-chip">Nikto</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-header fade-up">
+      <div class="section-kicker">Projects</div>
+      <h2 class="section-title">Security Projects</h2>
+    </div>
+    <div class="projects-grid fade-up">
+      <div class="card">
+        <div class="project-tag">Network Security · MITM Defense</div>
+        <div class="project-title">ARP Spoofing Detection System</div>
+        <ul class="project-desc">
+          <li>Developed a real-time ARP spoofing detection system to identify Man-in-the-Middle attacks within local networks.</li>
+          <li>Implemented packet capturing and analysis using Python and network monitoring techniques.</li>
+          <li>Designed logic to detect abnormal ARP responses and suspicious MAC–IP mappings.</li>
+          <li>Enhanced network security visibility by generating alerts for potential attack activities.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="project-tag">Network Monitoring · Raspberry Pi</div>
+        <div class="project-title">Netwiz – Network Anomaly Detector</div>
+        <ul class="project-desc">
+          <li>Designed a network anomaly detection system using Raspberry Pi for real-time traffic monitoring.</li>
+          <li>Captured and analyzed packets to identify unusual patterns and suspicious behavior.</li>
+          <li>Implemented alert mechanisms to notify administrators of potential security threats.</li>
+          <li>Improved proactive network defense through continuous monitoring and anomaly detection.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="project-tag">Digital Forensics · Cryptography</div>
+        <div class="project-title">Chrono – Cryptographic Metadata Forensics Consortium</div>
+        <ul class="project-desc">
+          <li>Built a cross-platform digital forensic tool to extract and analyze metadata from multiple file formats.</li>
+          <li>Integrated cryptographic hashing (MD5/SHA) to verify file integrity and support forensic investigations.</li>
+          <li>Developed automated reporting features for structured metadata analysis.</li>
+          <li>Strengthened digital evidence validation through structured and detailed forensic outputs.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTS & INTERNSHIP -->
+  <section id="certs">
+    <div class="section-header fade-up">
+      <div class="section-kicker">Credentials & Experience</div>
+      <h2 class="section-title">Certifications & Global Exposure</h2>
+    </div>
+    <div class="two-col fade-up">
+      <div class="card">
+        <h3>Security & Core Certifications</h3>
+        <ul>
+          <li>ethical hacking – Bostan Institute of Analytics</li>
+          <li>cyber security – Bostan Institute of Analytics</li>
+          <li>Ethical Hacking – NPTEL</li>
+          <li>Ethical Hacking & Penetration Testing – Udemy</li>
+          <li>Ethical Hacker – Cisco Netacad</li>
+          <li>Introduction to Cyber Security – Cisco Netacad</li>
+          <li>SOC (Cybersecurity) – Udemy</li>
+          <li>Networking Basics – Cisco Netacad</li>
+        </ul>
+        <h3 style="margin-top:14px;">Advanced & Other Courses</h3>
+        <ul>
+          <li>CISSP – Cybrary (training / course)</li>
+          <li>The Complete Python Programs – Udemy</li>
+          <li>Ui-Path Robotics Process Automation (RPA) – ICT Academy</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Global Immersion Program – Cybersecurity</h3>
+        <p style="font-size:13px;color:var(--muted);">
+          Participated in a two-week international Global Immersion Program at UMPSA – Universiti Malaysia Pahang Al-Sultan Abdullah,
+          gaining exposure to global cybersecurity practices and emerging technologies. Engaged in technical workshops and hands-on
+          sessions focused on network security, ethical hacking, and digital defense strategies. During the program, I developed an
+          ARP Spoofing Detection project to understand real-world network attack scenarios and mitigation techniques. This experience
+          enhanced my technical expertise, practical security skills, and adaptability within an international academic environment.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-header fade-up">
+      <div class="section-kicker">Contact</div>
+      <h2 class="section-title">Let's Connect</h2>
+    </div>
+    <div class="contact-grid fade-up">
+      <div class="card">
+        <div class="contact-item">
+          <span>Email</span> balainfosec7@gmail.com
+        </div>
+        <div class="contact-item">
+          <span>Phone</span> +91 8778050664
+        </div>
+        <div class="contact-item">
+          <span>LinkedIn</span>
+          <a href="https://www.linkedin.com/in/balacybersec" target="_blank">linkedin.com/in/balacybersec</a>
+        </div>
+        <div class="contact-item">
+          <span>GitHub</span>
+          <a href="https://github.com/Bala-cys" target="_blank">github.com/Bala-cys</a>
+        </div>
+        <div class="contact-item">
+          <span>Address</span> 1/223, North St., Melnariyappanur, Kallakurichi, Tamil Nadu, 606201
+        </div>
+      </div>
+      <div class="card">
+        <h3>Opportunities</h3>
+        <p style="font-size:13px;color:var(--muted);">
+          Open to roles as a Cybersecurity Engineer, SOC Analyst, or VAPT-focused security professional at enterprise security firms,
+          product-based companies, and security-first organizations across India and remote.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Bala · Cybersecurity · SOC · VAPT
+</footer>
+
+<script>
+window.addEventListener('load', () => {
+  document.body.classList.add('loaded');
+});
+</script>
+</body>
+</html>
